@@ -1,0 +1,11 @@
+<view class="container">
+  <van-cell-group>
+    <van-field label="车牌/车架号" placeholder="请输入车牌号或车架号" bind:input="inputPlateOrFrame" value="{{ plateOrFrame }}" clearable />
+    <van-field label="品牌车型" placeholder="请输入具体品牌车型" bind:input="inputCarModel" value="{{ carModel }}" clearable />
+    <van-field label="联系电话" placeholder="请输入联系电话" type="number" bind:input="inputPhone" value="{{ phone }}" clearable />
+    <van-field label="姓名" placeholder="请输入姓名" bind:input="inputName" value="{{ name }}" clearable />
+    <van-field label="起始地址" placeholder="请输入起始地址" bind:input="inputStartAddress" value="{{ startAddress }}" clearable />
+    <van-field label="终点地址" placeholder="请输入终点地址" bind:input="inputEndAddress" value="{{ endAddress }}" clearable />
+  </van-cell-group>
+  <van-button type="primary" block custom-style="margin-top: 20px" bind:tap="submitOrder">提交订单</van-button>
+</view>
