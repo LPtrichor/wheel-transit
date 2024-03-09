@@ -4,21 +4,16 @@
     "pages/category/category",
     "pages/cart/cart",
     "pages/my/my",
-    "pages/goods/list/list",
-    "pages/goods/detail/detail",
-    "pages/order/detail/detail",
-    "pages/order/list/list",
-    "pages/address/add/index",
-    "pages/address/list/index",
     "pages/login/login",
-    "pages/settings/settings",
-    "pages/profile/profile",
-    "pages/test/test"
+    "pages/order/order",
+    "pages/history/history",
+    "pages/test/test",
+    "pages/orderTest/test"
   ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#f3514f",
-    "navigationBarTitleText": "慕尚花坊",
+    "navigationBarTitleText": "驰途托运",
     "navigationBarTextStyle": "white"
   },
   "tabBar": {
@@ -34,20 +29,20 @@
         "selectedIconPath": "assets/tabbar/index-active.png"
       },
       {
-        "pagePath": "pages/category/category",
-        "text": "分类",
+        "pagePath": "pages/order/order",
+        "text": "下单",
         "iconPath": "assets/tabbar/cate.png",
         "selectedIconPath": "assets/tabbar/cate-active.png"
       },
       {
-        "pagePath": "pages/cart/cart",
-        "text": "购物车",
+        "pagePath": "pages/history/history",
+        "text": "订单",
         "iconPath": "assets/tabbar/cart.png",
         "selectedIconPath": "assets/tabbar/cart-active.png"
       },
       {
         "pagePath": "pages/my/my",
-        "text": "我的",
+        "text": "个人中心",
         "iconPath": "assets/tabbar/my.png",
         "selectedIconPath": "assets/tabbar/my-active.png"
       }
@@ -72,5 +67,46 @@
     "van-goods-action-icon": "@vant/weapp/goods-action-icon/index",
     "van-goods-action-button": "@vant/weapp/goods-action-button/index"
   },
-  "sitemapLocation": "sitemap.json"
+  "sitemapLocation": "sitemap.json",
+  "subPackages": [
+    {
+      "root": "modules/settingModule",
+      "name": "settingModule",
+      "pages": [
+        "pages/settings/settings",
+        "pages/address/add/index",
+        "pages/address/list/index",
+        "pages/profile/profile"
+      ]
+    },
+    {
+      "root": "modules/orderPayModule",
+      "name": "orderPayModule",
+      "pages": ["pages/order/detail/detail", "pages/order/list/list"]
+    }
+  ],
+  "preloadRule": {
+    "pages/my/my": {
+      "network": "all",
+      "packages": ["settingModule"]
+    },
+    "modules/orderPayModule/pages/order/detail/detail": {
+      "network": "all",
+      "packages": ["settingModule"]
+    },
+    "pages/cart/cart": {
+      "network": "all",
+      "packages": ["orderPayModule"]
+    }
+  },
+  "requiredPrivateInfos": ["getLocation", "chooseLocation"],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "获取地理位置信息用于填写收货地址"
+    }
+  },
+  "resolveAlias": {
+    "@/*": "/*"
+  },
+  "lazyCodeLoading": "requiredComponents"
 }

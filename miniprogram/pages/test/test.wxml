@@ -4,3 +4,15 @@
 <view class="box">
   <button type="warn" plain size="mini" bind:tap="handler">测试发送按钮</button>
 </view>
+<view class="box">
+  <button type="warn" plain size="mini" bind:tap="getUserProfile">获取用户信息</button>
+</view>
+
+<view class="avatar-container">
+  <image src="{{userInfo.avatarUrl}}" class="user-avatar"></image>
+</view>
+
+<view>
+  {{userInfo.avatarUrl}}
+  {{userInfo.nickName}}
+</view>

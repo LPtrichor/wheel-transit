@@ -7,7 +7,8 @@ import { toast, modal } from './extendApi'
 
 // 对类进行实例化
 const instance = new WxRequest({
-  baseURL: 'https://gmall-prod.atguigu.cn/mall-api',
+  // baseURL: 'https://gmall-prod.atguigu.cn/mall-api',
+  baseURL: 'http://localhost:8080/user',
   timeout: 15000
 })
 
@@ -20,7 +21,7 @@ instance.interceptors.request = (config) => {
 
   // 如果本地存在 token，这时候就需要在请求头中添加 token 字段
   if (token) {
-    config.header['token'] = token
+    config.header['authentication'] = token
   }
 
   // 在发送请求之前做些什么
@@ -61,7 +62,8 @@ instance.interceptors.response = async (response) => {
   // 业务状态码 === 208，没有 token 或者 token 失效，需要让用户重新进行登录
   // 业务状态码既不等于 200，也不等于 208，说明出现了其他异常，需要给用户统一进行提示
   switch (data.code) {
-    case 200:
+    // case 200:
+    case 1:
       // 接口调用成功，服务器成功返回了数据，只需要将数据简化以后返回即可
       return data
 
