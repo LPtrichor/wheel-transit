@@ -1,2 +1,27 @@
-<!--pages/history/history.wxml-->
-<text>pages/history/history.wxml</text>
+<!-- orders.wxml -->
+<view class="container">
+  <view class="title">当前订单</view>
+  <van-cell-group>
+    <van-cell title="车牌/车架号" value="{{ currentOrder.plateOrFrame }}" />
+    <van-cell title="品牌车型" value="{{ currentOrder.carModel }}" />
+    <van-cell title="联系电话" value="{{ currentOrder.phone }}" />
+    <van-cell title="姓名" value="{{ currentOrder.name }}" />
+    <van-cell title="起始地址" value="{{ currentOrder.startAddress }}" />
+    <van-cell title="终点地址" value="{{ currentOrder.endAddress }}" />
+    <van-cell title="订单创建时间" value="{{ currentOrder.createTime }}" />
+  </van-cell-group>
+
+  <view class="title">历史订单</view>
+  <block wx:for="{{historyOrders}}" wx:key="index">
+    <van-cell-group>
+      <van-cell title="订单号" value="{{item.orderId}}" />
+      <van-cell title="车牌/车架号" value="{{ item.plateOrFrame }}" />
+      <van-cell title="品牌车型" value="{{ item.carModel }}" />
+      <van-cell title="联系电话" value="{{ item.phone }}" />
+      <van-cell title="姓名" value="{{ item.name }}" />
+      <van-cell title="起始地址" value="{{ item.startAddress }}" />
+      <van-cell title="终点地址" value="{{ item.endAddress }}" />
+      <van-cell title="订单创建时间" value="{{ item.createTime }}" />
+    </van-cell-group>
+  </block>
+</view>

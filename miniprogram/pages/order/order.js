@@ -1,3 +1,5 @@
+import {reqSumbitOrder} from '@/api/order'
+
 Page({
   // 页面的初始数据
   data: {
@@ -40,10 +42,14 @@ Page({
   },
 
   // 方法：当用户提交订单时触发
-  submitOrder() {
+  async submitOrder() {
     // 这里添加提交订单的逻辑，例如调用API发送数据到后端
     console.log('订单信息:', this.data); // 在控制台打印订单信息，用于调试
-
+    const params = {
+      ...this.data
+    }
+    const res = await reqSumbitOrder(params)
+    console.log(res)
     // 显示提交成功的提示
     wx.showToast({
       title: '订单已提交', // 提示内容

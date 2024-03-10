@@ -1,66 +1,39 @@
-// pages/history/history.js
+// orders.js
+import {reqGetOrders} from '@/api/order'
+
 Page({
-
-  /**
-   * 页面的初始数据
-   */
   data: {
-
+    currentOrder: {},  // 当前订单
+    historyOrders: []  // 历史订单数组
+  },
+  onShow: function () {
+    this.fetchOrders();
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad(options) {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
-
+  async fetchOrders() {
+    try {
+      const page = 1;       // 第一页
+      const pageSize = 10;  // 每页10条记录
+      const res = await reqGetOrders(page, pageSize);
+      console.log(res)
+      if (res.code === 1) {
+        const orders = res.data.records;
+        this.setData({
+          currentOrder: orders[0], // 假设最新的订单是当前订单
+          historyOrders: orders.slice(1) // 其余的是历史订单
+        });
+      } else {
+        wx.showToast({
+          title: '获取订单失败',
+          icon: 'none'
+        });
+      }
+    } catch (error) {
+      wx.showToast({
+        title: '网络错误',
+        icon: 'none'
+      });
+    }
   }
-})
+  
+});
