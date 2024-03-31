@@ -8,7 +8,7 @@
     <banner />
 
     <!-- 导航分类 -->
-    <entrance />
+    <!-- <entrance /> -->
 
     <!-- 广告区域 -->
     <view class="adver">
@@ -33,7 +33,7 @@
     </view>
 
     <!-- 商品列表 -->
-    <goods-list title="猜你喜欢"></goods-list>
-    <goods-list title="人气推荐"></goods-list>
+    <!-- <goods-list title="猜你喜欢"></goods-list>
+    <goods-list title="人气推荐"></goods-list> -->
   </view>
 </view>

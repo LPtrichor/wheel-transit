@@ -10,7 +10,7 @@
   </view>
 
   <!-- 操作列表 -->
-  <view class="setting-list">
+  <!-- <view class="setting-list">
     <navigator
       url="/modules/settingModule/pages/address/list/index"
       hover-class="none"
@@ -18,7 +18,7 @@
     >
       我的收货地址
     </navigator>
-  </view>
+  </view> -->
 
   <view class="setting-list concat">
     <button hover-class="none" class="setting-item" open-type="feedback">

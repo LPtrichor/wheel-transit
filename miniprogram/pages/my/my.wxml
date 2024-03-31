@@ -31,7 +31,7 @@
     </view>
 
     <!-- 订单面板 -->
-    <view class="order section">
+    <!-- <view class="order section">
       <view class="order-title-wrap">
         <text class="title">我的订单</text>
         <text class="more">查看更多></text>
@@ -45,32 +45,33 @@
           </navigator>
         </view>
       </view>
-    </view>
+    </view> -->
 
-    <!-- 关于售前售后服务面板 -->
-    <view class="after-scale section">
-      <view class="order-title-wrap">
-        <text class="title">关于售前售后服务</text>
-      </view>
-      <view class="after-scale-item">
-        <view class="iconfont icon-kefufenxiermaikefu"></view>
-        <text>可与小程序客服实时聊天或电话咨询</text>
-      </view>
-      <view class="after-scale-item">
-        <view class="iconfont icon-shijian"></view>
-        <text>小程序客服工作时间为: 8:30 ~ 20:30</text>
-      </view>
-      <view class="after-scale-item">
-        <view class="iconfont icon-dizhiguanli"></view>
-        <text>鲜花制作完毕情况下暂不支持退款</text>
-      </view>
-      <view class="after-scale-item">
-        <view class="iconfont icon-zhangben"></view>
-        <text>鲜花可以提前7-15天预订重大节假日不支持定时配送</text>
-      </view>
-    </view>
+<!-- 关于售前售后服务面板 -->
+<view class="after-scale section">
+  <view class="order-title-wrap">
+    <text class="title">关于售前售后服务</text>
+  </view>
+  <view class="after-scale-item">
+    <view class="iconfont icon-kefufenxiermaikefu"></view>
+    <text>可与小程序客服实时聊天或电话咨询汽车托运服务详情</text>
+  </view>
+  <view class="after-scale-item">
+    <view class="iconfont icon-shijian"></view>
+    <text>小程序客服工作时间为: 8:30 ~ 20:30，为您解答托运疑问</text>
+  </view>
+  <view class="after-scale-item">
+    <view class="iconfont icon-dizhiguanli"></view>
+    <text>汽车托运一旦开始，暂不支持取消及退款</text>
+  </view>
+  <view class="after-scale-item">
+    <view class="iconfont icon-zhangben"></view>
+    <text>汽车可以提前预订，特定节假日或高峰期可能需要提前安排</text>
+  </view>
+</view>
+
 
     <!-- 底部面板 -->
-    <view class="info-footer"> 尚硅谷技术支持 </view>
+    <!-- <view class="info-footer"> 尚硅谷技术支持 </view> -->
   </view>
 </view>

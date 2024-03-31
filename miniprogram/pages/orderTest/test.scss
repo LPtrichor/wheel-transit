@@ -1,21 +1,79 @@
 page {
   .container {
     padding: 20px;
+  }
 
-    .van-cell-group {
-      margin-top: 20px;
+  .field-container {
+    position: relative;
+    display: block; // 确保占满整行
 
-      .van-field {
-        --van-field-label-width: 120px;
-
-        &:not(:last-child) {
-          --van-field-border-bottom: 1px solid #eee;
-        }
-      }
+    .van-field {
+      width: 100%; // 输入框占满容器宽度
     }
 
-    .van-button {
-      margin-top: 30px;
+    .location-icon {
+      position: absolute;
+      left: 75px; // 右侧内边距
+      top: 50%; // 垂直居中
+      transform: translateY(-50%); // 精确居中定位图标
+      display: flex;
+      align-items: center;
     }
   }
 }
+
+// page {
+//   .field-container {
+//     position: relative;
+//     display: flex;
+//     align-items: center;
+
+//     .van-field {
+//       width: 100%; // 确保输入框充满容器
+//       --van-field-label-width: 120px;
+//       --van-field-border-bottom: 1px solid #eee; // 统一底部边框样式
+//     }
+    
+//     .location-icon {
+//       position: absolute;
+//       right: 10px; // 根据实际需要调整
+//       display: flex;
+//       align-items: center;
+//       height: 100%;
+//     }
+//   }
+  
+//   .container {
+//     padding: 20px;
+
+//     .van-cell-group {
+//       margin-top: 20px;
+//     }
+
+//     .van-button {
+//       margin-top: 30px;
+//     }
+//   }
+// }
+
+// page {
+//   .container {
+//     padding: 20px;
+
+//     .van-cell-group {
+//       margin-top: 20px;
+
+//       .van-field {
+//         --van-field-label-width: 120px;
+
+//         &:not(:last-child) {
+//           --van-field-border-bottom: 1px solid #eee;
+//         }
+//       }
+//     }
+
+//     .van-button {
+//       margin-top: 30px;
+//     }
+//   }
+// }
