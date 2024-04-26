@@ -8,7 +8,9 @@
     "pages/order/order",
     "pages/history/history",
     "pages/test/test",
-    "pages/orderTest/test"
+    "pages/orderTest/test",
+    "pages/indexTest/index",
+    "pages/payTest/detail"
   ],
   "window": {
     "backgroundTextStyle": "light",

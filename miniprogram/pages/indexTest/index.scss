@@ -4,6 +4,14 @@
   justify-content: center; /* 水平居中 */
   align-items: center; /* 垂直居中 */
   width: 100%; /* 宽度占满 */
+  .img-index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; /* 图片宽度占满 */
+    height: 100%; /* 图片高度占满 */
+    margin: 0; /* 移除自动外边距 */
+  }
   // 首页背景图
   .window-bgc {
     height: 200rpx;
@@ -41,11 +49,4 @@
   }  
 }
 
-.img-index {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%; /* 图片宽度占满 */
-  // height: 100%; /* 图片高度占满 */
-  margin: 0; /* 移除自动外边距 */
-}
+

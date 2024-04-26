@@ -1,0 +1,3 @@
+<view class="index-container">
+  <image class="img-index" src="/assets/index/index_long_pic.png" />
+</view>

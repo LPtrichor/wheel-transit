@@ -3,22 +3,48 @@
   "projectname": "%E9%A9%B0%E9%80%94%E6%89%98%E8%BF%90",
   "setting": {
     "compileHotReLoad": true,
-    "urlCheck": true
+    "urlCheck": false
   },
   "libVersion": "3.3.5",
   "condition": {
     "miniprogram": {
       "list": [
         {
-          "name": "订单测试",
-          "pathName": "pages/orderTest/test",
+          "name": "支付测试",
+          "pathName": "pages/payTest/detail",
           "query": "",
           "launchMode": "default",
-          "scene": null
+          "scene": null,
+          "partialCompile": {
+            "enabled": true,
+            "pages": []
+          }
         },
         {
           "name": "测试页面",
           "pathName": "pages/test/test",
+          "query": "",
+          "launchMode": "default",
+          "scene": null,
+          "partialCompile": {
+            "enabled": true,
+            "pages": []
+          }
+        },
+        {
+          "name": "pages/indexTest/index",
+          "pathName": "pages/indexTest/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null,
+          "partialCompile": {
+            "enabled": true,
+            "pages": []
+          }
+        },
+        {
+          "name": "订单测试",
+          "pathName": "pages/orderTest/test",
           "query": "",
           "launchMode": "default",
           "scene": null

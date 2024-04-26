@@ -8,9 +8,9 @@ import { toast, modal } from './extendApi'
 // 对类进行实例化
 const instance = new WxRequest({
   // baseURL: 'https://gmall-prod.atguigu.cn/mall-api',
-  // baseURL: 'http://localhost:8080/user',
+  baseURL: 'http://localhost:8080/user',
   // baseURL: 'http://39.105.47.12:8080/user',
-  baseURL: 'https://hongminwuliu.top/user',
+  // baseURL: 'https://hongminwuliu.top/user',
   timeout: 15000
 })
 
@@ -32,69 +32,61 @@ instance.interceptors.request = (config) => {
 
 // 添加响应拦截器 (在服务器响应数据以后，对返回的数据进行逻辑处理)
 instance.interceptors.response = async (response) => {
-  // 从 response 对象中解构两个数据
-  const { isSuccess, data } = response
+  // 从 response 对象中解构数据
+  const { isSuccess, data, statusCode } = response;
 
-  // response 服务器响应的数据，只不过数据被 wx.request 进行了一层包装
-  // console.log(response)
+  // 鉴权失败，延迟提示用户登录
+  if (statusCode === 401) {
+    wx.switchTab({
+      url: '/pages/my/my',
+    });
+    setTimeout(() => {
+      toast({
+        title: '请先登录',
+        icon: 'none'
+      });
+      // 可选择重定向到登录页面
+    }, 3000); // 延迟3秒提示
+  }
 
-  // response.config 封装的包里面提供的 config 属性，是请求的参数信息
-  // 可以使用请求参数进行代码的调试
-
-  // response.data 服务器真正响应的数据
-
-  // response.isSuccess 判断代码执行了哪一个回调函数
-  // isSuccess = true，说明代码执行了 wx.request 方法的 success 回调函数
-  // isSuccess = false，说明代码执行了 wx.request 方法的 fail 回调函数
-
-  // 如果 isSuccess = false，说明网络出现了问题
+  // 网络请求失败
   if (!isSuccess) {
     toast({
       title: '网络异常请重试',
       icon: 'error'
-    })
-
-    return Promise.reject(response)
+    });
+    return Promise.reject(response);
   }
 
-  // 如果 isSuccess = true，说明代码执行到了 success 回调函数
-  // 需要开发者对返回的参数进行逻辑判断
-  // 需要对后端返回的业务状态码进行判断
-  // 业务状态码 === 200，接口调用成功，服务器成功返回了数据
-  // 业务状态码 === 208，没有 token 或者 token 失效，需要让用户重新进行登录
-  // 业务状态码既不等于 200，也不等于 208，说明出现了其他异常，需要给用户统一进行提示
+  // 根据后端返回的业务状态码进行判断
   switch (data.code) {
-    // case 200:
-    case 1:
-      // 接口调用成功，服务器成功返回了数据，只需要将数据简化以后返回即可
-      return data
+    case 1: // 业务状态码1代表调用成功
+      return data;
 
-    case 208:
+    case 401: // 鉴权失败，提示用户重新登录，并清除本地存储的过期信息
       const res = await modal({
         content: '鉴权失败，请重新登录',
         showCancel: false
-      })
-
-      if (res) {
-        // 既然用户需要重新进行登录，就需要把之前用户存储的信息(过期的 token) 进行清除
-        clearStorage()
-
+      });
+      if (res.confirm) {
+        clearStorage();
         wx.navigateTo({
           url: '/pages/login/login'
-        })
+        });
       }
+      return Promise.reject(response);
 
-      return Promise.reject(response)
-
-    default:
+    default: // 其他异常
       toast({
         title: '程序出现异常，请联系客服或稍后重试！'
-      })
-      return Promise.reject(response)
+      });
+      return Promise.reject(response);
   }
 
-  // return response
-}
+  // 正常返回响应数据
+  // return response; // 如果需要在外部还要继续处理响应，可以取消注释这一行
+};
+
 
 // 导出实例
 export default instance
