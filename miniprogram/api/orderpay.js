@@ -1,5 +1,5 @@
 import http from '@/utils/http'
-
+import { getStorage, clearStorage } from '../utils/storage'
 /**
  * @description 获取订单详情
  * @returns Promise
@@ -44,6 +44,8 @@ export const reqSubmitOrder = (data) => {
 // }
 // 假设这个方法接受一个orderNo作为参数，并且固定payMethod为0
 export const reqPrePayInfo = (orderNo, amount) => {
+  const token = getStorage('token')
+  // console.log('token', token)
   return new Promise((resolve, reject) => {
     wx.request({
       url: 'https://hongminwuliu.top/user/order/payment', // 目标服务器地址
@@ -56,7 +58,7 @@ export const reqPrePayInfo = (orderNo, amount) => {
       },
       header: {
         'content-type': 'application/json', // 设置请求的header
-        'authentication': 'eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MTcxNzg4NDIsInVzZXJJZCI6Nn0.zm5UHdEMxPmWTsydYDffCaBZPTm1y5V3bsWubhIYGvk' // 添加Authorization头部
+        'authentication': token // 添加Authorization头部
       },
       success(res) {
         // 请求成功，解析返回的数据并通过resolve返回
