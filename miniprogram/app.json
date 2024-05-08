@@ -15,7 +15,7 @@
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#f3514f",
-    "navigationBarTitleText": "驰途托运",
+    "navigationBarTitleText": "宏敏物流",
     "navigationBarTextStyle": "white"
   },
   "tabBar": {
@@ -101,7 +101,7 @@
       "packages": ["orderPayModule"]
     }
   },
-  "requiredPrivateInfos": ["getLocation", "chooseLocation"],
+  "requiredPrivateInfos": ["chooseLocation"],
   "permission": {
     "scope.userLocation": {
       "desc": "获取地理位置信息用于填写收货地址"

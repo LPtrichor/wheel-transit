@@ -164,6 +164,17 @@ Page({
               wx.switchTab({
                 url: '/pages/history/history',
                 success: function () {
+                  wx.showModal({
+                    title: '提示',
+                    content: '请耐心等待，即将为您回电',
+                    showCancel: false // 不显示取消按钮，用户只能点击确定关闭对话框
+                  });
+                  
+                  // wx.showToast({
+                  //   title: '请耐心等待，即将为您回电',
+                  //   // icon: icon,
+                  //   duration: 3000 // 提示持续时间
+                  // });
                   console.log("成功跳转到tabbar页面");
                 },
                 fail: function (err) {

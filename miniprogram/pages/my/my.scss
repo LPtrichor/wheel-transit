@@ -1,3 +1,30 @@
+/* 添加自定义悬停效果 */
+.custom-hover-class {
+  background-color: #F2F2F2; /* 悬停时的背景色 */
+  color: #333; /* 悬停时的文字颜色 */
+}
+
+/* 自定义按钮样式 */
+.contact-button {
+  margin-top: 10px; /* 上边距 */
+  background-color: #4CAF50; /* 按钮背景色 */
+  color: #FFFFFF; /* 按钮文字颜色 */
+  border: none; /* 移除按钮边框 */
+  padding: 10px 20px; /* 按钮内边距 */
+  border-radius: 5px; /* 圆角边框 */
+  font-size: 14px; /* 按钮文字大小 */
+  font-weight: bold; /* 文字加粗 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+}
+
+/* 按钮悬停效果 */
+.contact-button:hover {
+  background-color: #45a049; /* 悬停时的背景色 */
+}
+
+
+
+
 .container {
   padding: 0rpx !important;
 }

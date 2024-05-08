@@ -46,7 +46,8 @@ export const reqSubmitOrder = (data) => {
 export const reqPrePayInfo = (orderNo, amount) => {
   return new Promise((resolve, reject) => {
     wx.request({
-      url: ' https://651fb87a.r15.cpolar.top/user/order/payment', // 目标服务器地址
+      url: 'https://hongminwuliu.top/user/order/payment', // 目标服务器地址
+      // url: ' http://localhost:8080/user/order/payment', // 目标服务器地址
       method: 'PUT', // 请求方法
       data: {
         orderNumber: orderNo, // 使用函数参数

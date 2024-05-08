@@ -8,9 +8,9 @@ import { toast, modal } from './extendApi'
 // 对类进行实例化
 const instance = new WxRequest({
   // baseURL: 'https://gmall-prod.atguigu.cn/mall-api',
-  baseURL: 'http://localhost:8080/user',
+  // baseURL: 'http://localhost:8080/user',
   // baseURL: 'http://39.105.47.12:8080/user',
-  // baseURL: 'https://hongminwuliu.top/user',
+  baseURL: 'https://hongminwuliu.top/user',
   timeout: 15000
 })
 
