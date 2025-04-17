@@ -1,44 +1,71 @@
 <!-- orders.wxml -->
 <view class="container">
-  <view class="title">当前订单</view>
-  <van-cell-group>
-    <van-cell title="订单号" value="{{currentOrder.id}}" />
-    <van-cell title="车牌/车架号" value="{{ currentOrder.plateOrFrame }}" />
-    <van-cell title="品牌车型" value="{{ currentOrder.carModel }}" />
-    <van-cell title="联系电话" value="{{ currentOrder.phone }}" />
-    <van-cell title="姓名" value="{{ currentOrder.name }}" />
-    <van-cell title="起始地址" value="{{ currentOrder.startAddress }}" />
-    <van-cell title="终点地址" value="{{ currentOrder.endAddress }}" />
-    <van-cell title="订单创建时间" value="{{ currentOrder.createTime }}" />
-    <!-- 如果item.amount不为null则显示 -->
-    <van-cell wx:if="{{ currentOrder.amount !== null }}" title="订单金额" value="{{ currentOrder.amount }}" />
-    <!-- 如果item.pay_staus不为null则显示 -->
-    <van-cell wx:if="{{ currentOrder.payStatus !== null }}" title="支付状态" value="{{ payStatus[currentOrder.payStatus] }}" />
-    <!-- 显示支付状态item.status -->
-    <van-cell title="订单状态" value="{{ orderStatus[currentOrder.status]}}" />
-    <!-- 判断支付状态，如果未支付（例如，假设status为0表示未支付），则显示支付按钮 -->
-    <view wx:if="{{currentOrder.status === 1 && currentOrder.amount !== null}}">
-      <van-button type="primary" block custom-style="margin-top: 20px" bind:click="pay">支付订单</van-button>
-    </view>
-  </van-cell-group>
+  <!-- 订单状态筛选栏 -->
+  <view class="status-filter">
+    <view class="{{currentStatus === 'all' ? 'active-status' : ''}}" bindtap="changeStatus" data-status="all">全部</view>
+    <view class="{{currentStatus === '1' ? 'active-status' : ''}}" bindtap="changeStatus" data-status="1">待支付</view>
+    <view class="{{currentStatus === '2' ? 'active-status' : ''}}" bindtap="changeStatus" data-status="2">待接单</view>
+    <view class="{{currentStatus === '3' ? 'active-status' : ''}}" bindtap="changeStatus" data-status="3">运输中</view>
+    <view class="{{currentStatus === '4' ? 'active-status' : ''}}" bindtap="changeStatus" data-status="4">已完成</view>
+  </view>
 
-  <view class="title">历史订单</view>
-  <block wx:for="{{historyOrders}}" wx:key="index">
-    <van-cell-group>
-      <van-cell title="订单号" value="{{item.id}}" />
-      <van-cell title="车牌/车架号" value="{{ item.plateOrFrame }}" />
-      <van-cell title="品牌车型" value="{{ item.carModel }}" />
-      <van-cell title="联系电话" value="{{ item.phone }}" />
-      <van-cell title="姓名" value="{{ item.name }}" />
-      <van-cell title="起始地址" value="{{ item.startAddress }}" />
-      <van-cell title="终点地址" value="{{ item.endAddress }}" />
-      <van-cell title="订单创建时间" value="{{ item.createTime }}" />
-      <!-- 如果item.amount不为null则显示 -->
-      <van-cell wx:if="{{ item.amount !== null }}" title="订单金额" value="{{ item.amount }}" />
-      <!-- 如果item.pay_staus不为null则显示 -->
-      <van-cell wx:if="{{ item.payStatus !== null }}" title="支付状态" value="{{ payStatus[item.payStatus] }}" />
-      <!-- 显示支付状态item.status -->
-      <van-cell title="订单状态" value="{{ orderStatus[item.status]}}" />
-    </van-cell-group>
+  <!-- 当前订单 -->
+  <block wx:if="{{currentOrder.id}}">
+    <view class="order-section">
+      <view class="section-title">当前订单</view>
+      <view class="order-card">
+        <van-cell-group border="{{false}}">
+          <van-cell title="订单号" value="{{currentOrder.id}}" />
+          <van-cell title="车牌/车架号" value="{{ currentOrder.plateOrFrame }}" />
+          <van-cell title="品牌车型" value="{{ currentOrder.carModel }}" />
+          <van-cell title="联系电话" value="{{ currentOrder.phone }}" />
+          <van-cell title="姓名" value="{{ currentOrder.name }}" />
+          <van-cell title="起始地址" value="{{ currentOrder.startAddress }}" border="{{false}}" />
+          <van-cell title="终点地址" value="{{ currentOrder.endAddress }}" />
+          <van-cell title="订单创建时间" value="{{ currentOrder.createTime }}" />
+          <van-cell wx:if="{{ currentOrder.amount !== null }}" title="订单金额" value="¥{{ currentOrder.amount }}" />
+          <van-cell wx:if="{{ currentOrder.payStatus !== null }}" title="支付状态" value="{{ payStatus[currentOrder.payStatus] }}" />
+          <van-cell title="订单状态" value="{{ orderStatus[currentOrder.status]}}" />
+        </van-cell-group>
+
+        <!-- 支付按钮 -->
+        <view wx:if="{{currentOrder.status === 1 && currentOrder.amount !== null}}" class="order-actions">
+          <van-button type="primary" custom-class="pay-btn" bind:click="pay">支付订单</van-button>
+        </view>
+      </view>
+    </view>
   </block>
+
+  <!-- 历史订单 -->
+  <view class="order-section">
+    <view class="section-title">历史订单</view>
+    
+    <!-- 没有历史订单时显示空状态 -->
+    <view wx:if="{{filteredOrders.length === 0}}" class="empty-state">
+      <van-icon name="orders-o" size="80rpx" color="#cccccc" class="empty-icon" />
+      <view class="empty-text">暂无{{currentStatus !== 'all' ? orderStatus[currentStatus] : ''}}订单</view>
+    </view>
+    
+    <!-- 历史订单列表 -->
+    <block wx:for="{{filteredOrders}}" wx:key="id">
+      <view class="order-card">
+        <view class="order-header">
+          <view class="order-id">订单号: {{item.id}}</view>
+          <view class="order-status {{item.status === 4 ? 'completed' : item.status === 3 ? 'in-transit' : ''}}">
+            {{orderStatus[item.status]}}
+          </view>
+        </view>
+        
+        <van-cell-group border="{{false}}">
+          <van-cell title="车牌/车架号" value="{{ item.plateOrFrame }}" />
+          <van-cell title="品牌车型" value="{{ item.carModel }}" />
+          <van-cell title="起始地址" value="{{ item.startAddress }}" />
+          <van-cell title="终点地址" value="{{ item.endAddress }}" />
+          <van-cell title="订单创建时间" value="{{ item.createTime }}" />
+          <van-cell wx:if="{{ item.amount !== null }}" title="订单金额" value="¥{{ item.amount }}" />
+          <van-cell wx:if="{{ item.payStatus !== null }}" title="支付状态" value="{{ payStatus[item.payStatus] }}" border="{{false}}" />
+        </van-cell-group>
+      </view>
+    </block>
+  </view>
 </view>

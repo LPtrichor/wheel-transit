@@ -1,0 +1,116 @@
+.container {
+  padding: 20rpx;
+  background-color: #f7f8fa;
+  min-height: 100vh;
+}
+
+/* 状态筛选栏 */
+.status-filter {
+  display: flex;
+  justify-content: space-between;
+  padding: 20rpx 10rpx;
+  background-color: #fff;
+  margin-bottom: 20rpx;
+  border-radius: 8rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.status-filter view {
+  font-size: 28rpx;
+  padding: 10rpx 20rpx;
+  color: #666;
+  border-radius: 30rpx;
+}
+
+.active-status {
+  color: #f3514f !important;
+  font-weight: bold;
+  background-color: rgba(243, 81, 79, 0.1);
+}
+
+/* 订单部分 */
+.order-section {
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin: 30rpx 0 20rpx;
+  color: #333;
+}
+
+.order-card {
+  background-color: #fff;
+  border-radius: 8rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  margin-bottom: 20rpx;
+  overflow: hidden;
+}
+
+/* 订单头部 */
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 30rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.order-id {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.order-status {
+  font-size: 24rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  background-color: #e6e6e6;
+  color: #666;
+}
+
+.order-status.completed {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: #4caf50;
+}
+
+.order-status.in-transit {
+  background-color: rgba(33, 150, 243, 0.1);
+  color: #2196f3;
+}
+
+/* 支付按钮 */
+.order-actions {
+  padding: 20rpx 30rpx;
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1rpx solid #f5f5f5;
+}
+
+.pay-btn {
+  width: 180rpx !important;
+  border-radius: 30rpx !important;
+  font-size: 28rpx !important;
+  background-color: #f3514f !important;
+  border: none !important;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+}
+
+.empty-icon {
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+} 

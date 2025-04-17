@@ -1,4 +1,4 @@
-import mockData from './mockData';
+import mockData from '../utils/mockData';
 
 // 延迟函数，模拟网络请求延迟
 const delay = (ms = 500) => new Promise(resolve => setTimeout(resolve, ms));
@@ -119,27 +119,6 @@ const mockApi = {
         orderId,
         status: 5 // 已取消
       });
-    }
-  },
-  
-  // 首页相关 API
-  home: {
-    // 获取首页数据
-    getHomeData: async () => {
-      await delay();
-      return createResponse(mockData.homeData);
-    },
-    
-    // 获取轮播图
-    getBanners: async () => {
-      await delay();
-      return createResponse(mockData.homeData.banners);
-    },
-    
-    // 获取服务入口
-    getServiceEntries: async () => {
-      await delay();
-      return createResponse(mockData.homeData.serviceEntries);
     }
   },
   

@@ -4,8 +4,8 @@ import WxRequest from 'mina-request'
 import { getStorage, clearStorage } from './storage'
 // 导入封装的增强 API
 import { toast, modal } from './extendApi'
-// 导入 mock API 服务
-import mockApi from './mockApi'
+// 导入 mock API 服务 - 使用绝对路径
+import mockApi from '../utils/mockApi'
 
 // 是否使用 mock 数据（开发时设为 true，生产环境设为 false）
 const ENABLE_MOCK = true;
