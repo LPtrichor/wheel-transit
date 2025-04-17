@@ -10,30 +10,140 @@ import {
   reqPrePayInfo,
   reqPayStatus
 } from '../../api/orderpay'
+import http from '../../utils/http';
+import mockData from '../../utils/mockData';
 
 Page({
+  /**
+   * 页面的初始数据
+   */
   data: {
     currentOrder: {}, // 当前订单
-    historyOrders: [], // 历史订单数组
-    // 定义一个包含订单状态的数组
-    orderStatus: [
-      "后台改价",
-      "待付款",
-      "待接单",
-      "已接单",
-      "托运中",
-      "已完成",
-      "已取消"
-    ],
-    payStatus:[
-      "未支付",
-      "已支付",
-      "已退款"
-    ],
+    historyOrders: [], // 历史订单
+    orderStatus: mockData.statusMapping.orderStatus, // 订单状态映射
+    payStatus: mockData.statusMapping.payStatus, // 支付状态映射
+    currentStatus: 'all' // 当前筛选状态
   },
-  onShow: function () {
+
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad(options) {
     this.fetchOrders();
   },
+
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow() {
+    this.fetchOrders();
+  },
+
+  /**
+   * 获取订单数据
+   */
+  async fetchOrders() {
+    try {
+      wx.showLoading({
+        title: '加载中...'
+      });
+
+      // 获取当前订单
+      const currentOrderRes = await http.get('order/getCurrentOrder');
+      if (currentOrderRes.code === 1) {
+        this.setData({
+          currentOrder: currentOrderRes.data
+        });
+      }
+
+      // 获取历史订单
+      const historyOrdersRes = await http.get('order/getHistoryOrders');
+      if (historyOrdersRes.code === 1) {
+        this.setData({
+          historyOrders: historyOrdersRes.data
+        });
+      }
+
+      wx.hideLoading();
+    } catch (error) {
+      console.error('获取订单失败', error);
+      wx.hideLoading();
+      wx.showToast({
+        title: '获取订单失败',
+        icon: 'none'
+      });
+    }
+  },
+
+  /**
+   * 支付订单
+   */
+  async pay() {
+    try {
+      const { currentOrder } = this.data;
+      
+      wx.showLoading({
+        title: '支付中...'
+      });
+
+      // 调用支付接口
+      const res = await http.post('order/payOrder', { orderId: currentOrder.id });
+      
+      if (res.code === 1) {
+        // 支付成功，更新订单状态
+        this.setData({
+          'currentOrder.payStatus': 1,
+          'currentOrder.status': 2
+        });
+        
+        wx.showToast({
+          title: '支付成功',
+          icon: 'success'
+        });
+        
+        // 刷新订单列表
+        setTimeout(() => {
+          this.fetchOrders();
+        }, 1500);
+      } else {
+        wx.showToast({
+          title: '支付失败',
+          icon: 'none'
+        });
+      }
+      
+      wx.hideLoading();
+    } catch (error) {
+      console.error('支付失败', error);
+      wx.hideLoading();
+      wx.showToast({
+        title: '支付失败',
+        icon: 'none'
+      });
+    }
+  },
+
+  /**
+   * 切换订单状态筛选
+   */
+  changeStatus(e) {
+    const status = e.currentTarget.dataset.status;
+    this.setData({
+      currentStatus: status
+    });
+    
+    // 简单实现，实际应该根据状态筛选订单
+    // 这里仅做UI状态变化演示
+  },
+
+  /**
+   * 下拉刷新
+   */
+  onPullDownRefresh() {
+    this.fetchOrders();
+    wx.stopPullDownRefresh();
+  },
+
   // 获取预付单信息、支付参数
   async advancePay() {
     try {

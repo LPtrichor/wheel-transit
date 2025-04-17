@@ -18,6 +18,9 @@ import { userStore } from '../../stores/userstore'
 // 导入防抖函数
 import { debounce } from 'miniprogram-licia'
 
+// 导入 HTTP 工具函数
+import http from '../../utils/http'
+
 // 使用 ComponentWithStore 方法替换 Component 方法构造页面
 ComponentWithStore({
   // 让页面和 Store 对象建立关联
@@ -27,36 +30,62 @@ ComponentWithStore({
     actions: ['setToken', 'setUserInfo']
   },
 
+  /**
+   * 页面的初始数据
+   */
+  data: {
+    loading: false
+  },
+
   methods: {
     // 授权登录
-    login: debounce(function () {
-      // 使用 wx.login 获取用户的临时登录凭证 code
-      wx.login({
-        // success: async ({ res }) => {
-        success: async (res) => {
-          console.log(res)
-          const code = res.code
-          if (code) {
-            // 在获取到临时登录凭证 code 以后，需要传递给开发者服务器
-            const { data } = await reqLogin(code)
+    async handleLogin() {
+      try {
+        this.setData({
+          loading: true
+        });
+
+        // 调用模拟登录接口
+        const res = await http.post('user/login', {
+          code: 'mock_code'
+        });
+        
+        if (res.code === 1) {
+          // 保存 token 到本地和 store
+          setStorage('token', res.data.token);
+          userStore.setToken(res.data.token);
           
-            // 登录成功以后，需要将服务器响应的自定义登录态存储到本地
-            setStorage('token', data.token)
-
-            // 将自定义登录态 token 存储到 Store 对象
-            this.setToken(data.token)
-
-            // 获取用户信息
-            this.getUserInfo()
-            // console.log('获取用户信息')
-            // 返回上一级页面
-            wx.navigateBack()
-          } else {
-            toast({ title: '授权失败，请重新授权' })
-          }
+          // 保存用户信息到本地和 store
+          setStorage('userInfo', res.data.userInfo);
+          userStore.setUserInfo(res.data.userInfo);
+          
+          wx.showToast({
+            title: '登录成功',
+            icon: 'success'
+          });
+          
+          // 返回上一页
+          setTimeout(() => {
+            wx.navigateBack();
+          }, 1500);
+        } else {
+          wx.showToast({
+            title: '登录失败',
+            icon: 'none'
+          });
         }
-      })
-    }, 500),
+      } catch (error) {
+        console.error('登录失败', error);
+        wx.showToast({
+          title: '登录失败',
+          icon: 'none'
+        });
+      } finally {
+        this.setData({
+          loading: false
+        });
+      }
+    },
 
     // 获取用户信息
     async getUserInfo() {

@@ -1,5 +1,5 @@
 <view class="container">
-  <van-cell-group>
+  <van-cell-group title="基本信息">
     <van-field label="车牌/车架号" placeholder="请输入车牌号或车架号" bind:input="inputPlateOrFrame" value="{{ plateOrFrame }}" clearable />
     <van-field label="品牌车型" placeholder="请输入具体品牌车型" bind:input="inputCarModel" value="{{ carModel }}" clearable />
     <van-field label="联系电话" placeholder="请输入联系电话" type="number" bind:input="inputPhone" value="{{ phone }}" clearable />
@@ -17,5 +17,62 @@
       </view>
     </view>
   </van-cell-group>
-  <van-button type="primary" block custom-style="margin-top: 20px" bind:tap="submitOrder">提交订单</van-button>
+  
+  <van-cell-group title="车辆类型" custom-class="option-group">
+    <van-cell title="是否为豪车" bind:click="toggleLuxury">
+      <van-switch checked="{{ isLuxury }}" size="24px" active-color="#f3514f" />
+    </van-cell>
+    <view class="tip-text" wx:if="{{ isLuxury }}">豪车运输需额外支付1.5倍费用</view>
+  </van-cell-group>
+  
+  <view class="price-panel" wx:if="{{ amount }}">
+    <view class="price-title">预估金额</view>
+    <view class="price-value">¥{{ amount }}</view>
+  </view>
+  
+  <van-button type="primary" block custom-style="margin-top: 20px" bind:tap="submitOrder" loading="{{ loading }}" disabled="{{ loading }}">{{ amount ? '提交订单' : '计算价格' }}</van-button>
+  
+  <!-- 价格详情弹窗 -->
+  <van-popup show="{{ showPricePopup }}" round position="bottom" custom-style="height: 50%" bind:close="closePricePopup">
+    <view class="price-popup">
+      <view class="price-popup-title">价格详情</view>
+      
+      <view class="price-item">
+        <text>基础费用</text>
+        <text>¥{{ priceDetail.baseFee }}</text>
+      </view>
+      
+      <view class="price-item">
+        <text>里程费用 (约{{ priceDetail.distance }}公里)</text>
+        <text>¥{{ priceDetail.distanceFee }}</text>
+      </view>
+      
+      <view class="price-item" wx:if="{{ isLuxury }}">
+        <text>豪车加价 (1.5倍)</text>
+        <text>已计入总价</text>
+      </view>
+      
+      <view class="price-item">
+        <text>保险费用</text>
+        <text>¥{{ priceDetail.insuranceFee }}</text>
+      </view>
+      
+      <view class="price-item">
+        <text>服务费</text>
+        <text>¥{{ priceDetail.serviceFee }}</text>
+      </view>
+      
+      <view class="price-divider"></view>
+      
+      <view class="price-total">
+        <text>预估总价</text>
+        <text class="price-total-value">¥{{ priceDetail.totalPrice }}</text>
+      </view>
+      
+      <view class="price-actions">
+        <van-button plain type="default" bind:tap="closePricePopup">取消</van-button>
+        <van-button type="primary" bind:tap="confirmPrice">确认并提交</van-button>
+      </view>
+    </view>
+  </van-popup>
 </view>

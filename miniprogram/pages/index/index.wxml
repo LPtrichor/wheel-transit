@@ -1,43 +1,36 @@
 <view class="index-container">
   <!--首页背景图-->
-  <!-- <view class="window-bgc"></view> -->
+  <view class="window-bgc"></view>
 
   <!-- 页面主体区域 -->
-  <!-- <view class="container"> -->
-  <!-- 轮播图区域 -->
-  <!-- <banner /> -->
-
-  <!-- 导航分类 -->
-  <!-- <entrance /> -->
-
-  <!-- 广告区域 -->
-  <!-- <view class="adver">
-      <view class="adver-left">
-        <navigator url="/pages/goods/list/list?category2Id=1">
-          <image src="/assets/index/index-3.jpg" mode="widthFix" />
-        </navigator>
-      </view>
-
-      <view class="adver-right">
-        <view>
-          <navigator url="/pages/goods/list/list?category2Id=2">
-            <image src="/assets/index/index-2.jpg" mode="widthFix" />
+  <view class="container">
+    <!-- 轮播图区域 -->
+    <view class="banner-section">
+      <swiper class="banner-swiper" indicator-dots autoplay circular>
+        <swiper-item wx:for="{{banners}}" wx:key="id">
+          <navigator url="{{item.linkUrl}}">
+            <image src="{{item.imageUrl}}" mode="widthFix" class="banner-image"></image>
           </navigator>
-        </view>
-        <view>
-          <navigator url="/pages/goods/list/list?category2Id=3">
-            <image src="/assets/index/index-1.jpg" mode="widthFix" />
-          </navigator>
+        </swiper-item>
+      </swiper>
+    </view>
+
+    <!-- 服务入口区域 -->
+    <view class="service-section">
+      <view class="service-title">物流服务</view>
+      <view class="service-grid">
+        <view class="service-item" wx:for="{{serviceEntries}}" wx:key="id" data-url="{{item.url}}" bindtap="goToService">
+          <view class="service-icon">
+            <view class="iconfont icon-{{item.icon}}"></view>
+          </view>
+          <view class="service-name">{{item.name}}</view>
         </view>
       </view>
-    </view> -->
-  <!-- 商品列表 -->
-  <!-- <goods-list title="猜你喜欢"></goods-list>
-    <goods-list title="人气推荐"></goods-list> -->
-  <!-- </view> -->
+    </view>
 
-</view>
-<view>
-  <!-- <image class="img-index" src="/assets/index/index_long_pic.png" mode="widthFix"/> -->
-  <image class="img-index" src="https://wheel-transit.oss-cn-beijing.aliyuncs.com/index/index_long_pic.png" mode="widthFix" />
+    <!-- 宣传区域 -->
+    <view class="promo-section">
+      <image class="img-index" src="https://wheel-transit.oss-cn-beijing.aliyuncs.com/index/index_pic2.jpg" mode="widthFix" />
+    </view>
+  </view>
 </view>

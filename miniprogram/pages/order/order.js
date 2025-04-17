@@ -3,6 +3,8 @@ import {
 } from '@/api/order'
 // 导入 async-validator 对参数进行验证
 import Schema from 'async-validator'
+// 导入 HTTP 工具函数，使用 mock 数据
+import http from '../../utils/http'
 
 Page({
   // 页面的初始数据
@@ -13,8 +15,56 @@ Page({
     name: '', // 用户姓名
     startAddress: '', // 起始地址
     endAddress: '', // 终点地址
+    amount: '', // 订单金额
+    insuranceId: 1, // 保险选项，默认基础保障
+    isLuxury: false, // 是否为豪车，影响价格
+    priceDetail: null, // 价格详情
+    showPricePopup: false, // 是否显示价格弹窗
+    insuranceOptions: [], // 保险选项列表
+    loading: false, // 提交按钮加载状态
   },
 
+  // 生命周期函数--监听页面加载
+  onLoad(options) {
+    // 获取价格规则
+    this.fetchPriceRules();
+    
+    // 如果是从分享或其它入口传入了参数，进行处理
+    if (options.type) {
+      if (options.type === 'luxury') {
+        this.setData({ isLuxury: true });
+      }
+    }
+  },
+
+  // 获取价格规则
+  async fetchPriceRules() {
+    try {
+      const res = await http.get('price/getPriceRules');
+      if (res.code === 1) {
+        this.setData({
+          insuranceOptions: res.data.insuranceOptions
+        });
+      }
+    } catch (error) {
+      console.error('获取价格规则失败', error);
+    }
+  },
+
+  onShareTimeline: function() {
+    return {
+      title: '宏敏物流',
+      imageUrl: 'https://wheel-transit.oss-cn-beijing.aliyuncs.com/index/cover_image.jpgg'  // 例如：封面图，可选
+    };
+  },
+  onShareAppMessage: function (options) {
+    // 设置分享内容
+    return {
+      title: '宏敏物流',
+      imageUrl: 'https://wheel-transit.oss-cn-beijing.aliyuncs.com/index/cover_image.jpg', // 可选
+      path: '/pages/order/order' // 被分享的页面路径
+    };
+  },
   // 方法：当用户输入车牌/车架号时触发，更新页面数据
   inputPlateOrFrame(e) {
     this.setData({
@@ -57,140 +107,215 @@ Page({
     });
   },
 
-    // 地理定位
-    async onStartLocation() {
-      try {
-        const res = await wx.chooseLocation();
-        console.log(res); // 打印整个返回结果，确保有结果
-        console.log(res.address); // 打印地址信息，确保这部分有返回
-        this.setData({
-          startAddress: res.address
-        }, () => {
-          console.log("startAddress:", this.data.startAddress); // 确保这里使用this.data.startAddress
-        });
-      } catch (error) {
-        console.error("获取位置失败:", error);
-      }
-    },
+  // 切换豪车状态
+  toggleLuxury() {
+    this.setData({
+      isLuxury: !this.data.isLuxury
+    });
+  },
 
-    async onEndLocation() {
-      try {
-        const res = await wx.chooseLocation();
-        console.log(res); // 打印整个返回结果，确保有结果
-        console.log(res.address); // 打印地址信息，确保这部分有返回
-        this.setData({
-          endAddress: res.address
-        }, () => {
-          console.log("startAddress:", this.data.endAddress); // 确保这里使用this.data.startAddress
-        });
-      } catch (error) {
-        console.error("获取位置失败:", error);
-      }
-    },
+  // 选择保险选项
+  selectInsurance(e) {
+    this.setData({
+      insuranceId: e.currentTarget.dataset.id
+    });
+  },
 
+  // 地理定位
+  async onStartLocation() {
+    try {
+      const res = await wx.chooseLocation();
+      console.log(res); // 打印整个返回结果，确保有结果
+      console.log(res.address); // 打印地址信息，确保这部分有返回
+      this.setData({
+        startAddress: res.address
+      }, () => {
+        console.log("startAddress:", this.data.startAddress); // 确保这里使用this.data.startAddress
+      });
+    } catch (error) {
+      console.error("获取位置失败:", error);
+    }
+  },
+
+  async onEndLocation() {
+    try {
+      const res = await wx.chooseLocation();
+      console.log(res); // 打印整个返回结果，确保有结果
+      console.log(res.address); // 打印地址信息，确保这部分有返回
+      this.setData({
+        endAddress: res.address
+      }, () => {
+        console.log("startAddress:", this.data.endAddress); // 确保这里使用this.data.startAddress
+      });
+    } catch (error) {
+      console.error("获取位置失败:", error);
+    }
+  },
+
+  // 计算价格
+  async calculatePrice() {
+    try {
+      // 先验证输入
+      const params = {
+        ...this.data
+      };
+      
+      const { valid } = await this.validatorPerson(params);
+      if (!valid) return;
+      
+      // 显示加载中
+      wx.showLoading({
+        title: '计算价格中...',
+      });
+      
+      // 调用价格计算API
+      const res = await http.post('price/calculatePrice', {
+        startAddress: this.data.startAddress,
+        endAddress: this.data.endAddress,
+        isLuxury: this.data.isLuxury,
+        insuranceId: this.data.insuranceId
+      });
+      
+      wx.hideLoading();
+      
+      if (res.code === 1) {
+        this.setData({
+          priceDetail: res.data,
+          amount: res.data.totalPrice,
+          showPricePopup: true
+        });
+      } else {
+        wx.showToast({
+          title: '价格计算失败',
+          icon: 'none'
+        });
+      }
+    } catch (error) {
+      wx.hideLoading();
+      console.error('计算价格失败', error);
+      wx.showToast({
+        title: '价格计算失败',
+        icon: 'none'
+      });
+    }
+  },
+  
+  // 关闭价格弹窗
+  closePricePopup() {
+    this.setData({
+      showPricePopup: false
+    });
+  },
+  
+  // 确认价格
+  confirmPrice() {
+    this.setData({
+      showPricePopup: false
+    });
+    this.submitOrder();
+  },
 
   // 方法：当用户提交订单时触发
   async submitOrder() {
     console.log('订单信息:', this.data); // 在控制台打印订单信息，用于调试
-    const params = {
-      ...this.data
-    };
+    
+    try {
+      // 如果没有计算价格，则先计算价格
+      if (!this.data.amount) {
+        this.calculatePrice();
+        return;
+      }
+      
+      const params = {
+        plateOrFrame: this.data.plateOrFrame,
+        carModel: this.data.carModel,
+        phone: this.data.phone,
+        name: this.data.name,
+        startAddress: this.data.startAddress,
+        endAddress: this.data.endAddress,
+        amount: this.data.amount,
+        isLuxury: this.data.isLuxury,
+        insuranceId: this.data.insuranceId
+      };
 
-    // 对请求参数进行验证
-    const {
-      valid
-    } = await this.validatorPerson(params)
+      // 对请求参数进行验证
+      const { valid } = await this.validatorPerson(params);
 
-    // 如果请求参数验证失败，直接 return ，不执行后续的逻辑
-    if (!valid) return
+      // 如果请求参数验证失败，直接 return ，不执行后续的逻辑
+      if (!valid) return;
 
-    // 显示确认提交订单的模态对话框
-    const res = await new Promise((resolve, reject) => {
-      wx.showModal({
-        title: '订单提交确认',
-        content: '确定提交订单？',
-        success: resolve,
-        fail: reject
+      // 显示确认提交订单的模态对话框
+      const res = await new Promise((resolve, reject) => {
+        wx.showModal({
+          title: '订单提交确认',
+          content: '确定提交订单？金额：￥' + this.data.amount,
+          success: resolve,
+          fail: reject
+        });
       });
-    });
-    console.log("res", res);
 
-    // 用户取消了订单提交
-    if (res.cancel) {
-      wx.showToast({
-        title: '已取消订单',
-        icon: 'success',
-        duration: 2000
-      });
-      return; // 直接返回，不再执行后续代码
-    }
-
-    // 用户确认了订单提交
-    if (res.confirm) {
-      let message = '';
-      let icon = 'success'; // 默认为成功的图标
-      let delayBeforeRedirect = 1000; // 跳转前的延迟时间
-
-      try {
-        const orderResult = await reqSumbitOrder(params);
-
-        if (orderResult.code == 1) {
-          message = '订单已提交';
-          delayBeforeRedirect += 2000; // 提交成功，等待提示显示完毕后再跳转
-        } else {
-          // 根据实际情况，如果有错误码的详细分析，可以在这里设置不同的消息
-          message = '订单提交失败，请稍后再试';
-          icon = 'none';
-        }
-      } catch (error) {
-        console.error('提交订单过程中发生错误:', error);
-        message = '提交异常，请检查网络后重试';
-        icon = 'none';
+      // 用户取消了订单提交
+      if (res.cancel) {
+        wx.showToast({
+          title: '已取消订单',
+          icon: 'success',
+          duration: 2000
+        });
+        return; // 直接返回，不再执行后续代码
       }
 
-      // 延迟1秒后显示提示信息
-      setTimeout(() => {
-        wx.showToast({
-          title: message,
-          icon: icon,
-          duration: 2000 // 提示持续时间
-        });
+      // 用户确认了订单提交
+      if (res.confirm) {
+        this.setData({ loading: true });
+        
+        try {
+          // 使用 mock API 提交订单
+          const orderResult = await http.post('order/createOrder', params);
 
-        // 如果订单提交成功，等待提示结束后跳转到订单页面
-        if (message === '订单已提交') {
-          setTimeout(() => {
-            try {
-              console.log("准备跳转到tabbar页面");
+          if (orderResult.code === 1) {
+            wx.showToast({
+              title: '订单已提交',
+              icon: 'success',
+              duration: 2000
+            });
+            
+            // 等待提示显示完毕后再跳转
+            setTimeout(() => {
               wx.switchTab({
                 url: '/pages/history/history',
                 success: function () {
                   wx.showModal({
                     title: '提示',
                     content: '请耐心等待，即将为您回电',
-                    showCancel: false // 不显示取消按钮，用户只能点击确定关闭对话框
+                    showCancel: false
                   });
-                  
-                  // wx.showToast({
-                  //   title: '请耐心等待，即将为您回电',
-                  //   // icon: icon,
-                  //   duration: 3000 // 提示持续时间
-                  // });
-                  console.log("成功跳转到tabbar页面");
-                },
-                fail: function (err) {
-                  console.log("跳转到tabbar页面失败", err);
                 }
               });
-            } catch (error) {
-              console.error("尝试跳转到tabbar页面时捕获到异常", error);
-            }
-
-            // wx.navigateTo({
-            //   url: '/pages/history/history'
-            // });
-          }, 2000); // 等待提示信息展示完毕后跳转
+            }, 2000);
+          } else {
+            wx.showToast({
+              title: '订单提交失败',
+              icon: 'none',
+              duration: 2000
+            });
+          }
+        } catch (error) {
+          console.error('提交订单出错', error);
+          wx.showToast({
+            title: '提交失败，请重试',
+            icon: 'none'
+          });
+        } finally {
+          this.setData({ loading: false });
         }
-      }, 1000);
+      }
+    } catch (error) {
+      console.error('提交订单过程中发生错误:', error);
+      wx.showToast({
+        title: '提交异常，请稍后重试',
+        icon: 'none'
+      });
+      this.setData({ loading: false });
     }
   },
 
@@ -241,24 +366,33 @@ Page({
       ]
     };
 
+    // 创建 Schema 实例
     const validator = new Schema(rules);
 
-    try {
-      // 进行验证
-      await validator.validate(data);
-      // 验证成功
-      return {
-        valid: true
-      };
-    } catch (error) {
-      // 验证失败，显示第一个错误提示
-      wx.toast({
-        title: error.errors[0].message
-      });
-      return {
-        valid: false
-      };
-    }
-  }
+    // 定义验证结果
+    let valid = false;
 
+    await new Promise((resolve) => {
+      // 进行验证
+      validator.validate(data, {
+        firstFields: true
+      }, (errors, fields) => {
+        // 当存在验证错误时，在页面上进行提示
+        if (errors) {
+          wx.showToast({
+            title: errors[0].message,
+            icon: 'none',
+            mask: true
+          });
+        } else {
+          valid = true;
+        }
+        resolve();
+      });
+    });
+
+    return {
+      valid
+    };
+  }
 });

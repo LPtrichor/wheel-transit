@@ -1,10 +1,20 @@
-<van-empty
-  image="/assets/images/avatar.png"
-  description="请点击下方的按钮，授权登陆您的账户～"
->
-  <van-button round type="danger" class="bottom-button" bindtap="login">
-    点击授权登陆
-  </van-button>
-</van-empty>
+<view class="login-container">
+  <view class="logo">
+    <image src="/assets/images/logo.png" mode="aspectFit"></image>
+    <text class="title">宏敏物流</text>
+  </view>
+  
+  <view class="login-form">
+    <view class="login-desc">登录后使用更多功能</view>
+    <button class="login-btn" bindtap="handleLogin" loading="{{loading}}" disabled="{{loading}}">微信一键登录</button>
+  </view>
+  
+  <view class="login-tips">
+    <text>登录即代表您已同意</text>
+    <navigator url="/pages/agreement/user" class="link">《用户协议》</navigator>
+    <text>和</text>
+    <navigator url="/pages/agreement/privacy" class="link">《隐私政策》</navigator>
+  </view>
+</view>
 
 <!-- <view>{{userInfo.nickname}}</view> -->
